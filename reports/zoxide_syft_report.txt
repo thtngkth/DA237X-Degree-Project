@@ -1,0 +1,55 @@
+===== TOTAL COMPONENTS =====
+Total Cargo packages: 114
+Total SBOM components: 114
+
+===== EDGE METRICS =====
+Correct edge coverage: 75.19%
+Missing edges: 65 (24.81%)
+False edges: 0 (0.00%)
+
+===== COMPONENT METRICS =====
+Missed components: 0 (0.00%)
+Hallucinated components: 0 (0.00%)
+
+===== VERSION MISMATCHES =====
+Version mismatches: 0 (0.00%)
+
+===== TRANSITIVE DEPENDENCY =====
+Distribution of packages by coverage (%):
+100% coverage: 52 package(s) (45.61%)
+83% coverage: 1 package(s) (0.88%)
+79% coverage: 1 package(s) (0.88%)
+75% coverage: 3 package(s) (2.63%)
+74% coverage: 2 package(s) (1.75%)
+73% coverage: 1 package(s) (0.88%)
+71% coverage: 1 package(s) (0.88%)
+67% coverage: 5 package(s) (4.39%)
+65% coverage: 1 package(s) (0.88%)
+64% coverage: 1 package(s) (0.88%)
+62% coverage: 3 package(s) (2.63%)
+61% coverage: 1 package(s) (0.88%)
+60% coverage: 1 package(s) (0.88%)
+56% coverage: 2 package(s) (1.75%)
+54% coverage: 1 package(s) (0.88%)
+50% coverage: 6 package(s) (5.26%)
+48% coverage: 1 package(s) (0.88%)
+47% coverage: 1 package(s) (0.88%)
+44% coverage: 1 package(s) (0.88%)
+43% coverage: 1 package(s) (0.88%)
+33% coverage: 1 package(s) (0.88%)
+31% coverage: 1 package(s) (0.88%)
+28% coverage: 1 package(s) (0.88%)
+27% coverage: 1 package(s) (0.88%)
+25% coverage: 2 package(s) (1.75%)
+21% coverage: 2 package(s) (1.75%)
+17% coverage: 2 package(s) (1.75%)
+14% coverage: 1 package(s) (0.88%)
+11% coverage: 1 package(s) (0.88%)
+9% coverage: 2 package(s) (1.75%)
+8% coverage: 1 package(s) (0.88%)
+7% coverage: 1 package(s) (0.88%)
+6% coverage: 1 package(s) (0.88%)
+3% coverage: 1 package(s) (0.88%)
+0% coverage: 10 package(s) (8.77%)
+
+===== END OF REPORT =====

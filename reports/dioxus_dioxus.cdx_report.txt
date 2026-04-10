@@ -1,0 +1,60 @@
+===== TOTAL COMPONENTS =====
+Total Cargo packages: 1579
+Total SBOM components: 715
+
+===== EDGE METRICS =====
+Correct edge coverage: 28.31%
+Missing edges: 6388 (71.69%)
+False edges: 3 (0.12%)
+
+===== FALSE EDGES =====
+stylo (0.8.0) -> icu_segmenter (2.1.2)
+webkit2gtk (2.0.1) -> javascriptcore-rs (1.1.2)
+webkit2gtk-sys (2.0.1) -> javascriptcore-rs-sys (1.1.1)
+
+===== COMPONENT METRICS =====
+Missed components: 864 (54.72%)
+Hallucinated components: 0 (0.00%)
+
+===== VERSION MISMATCHES =====
+Version mismatches: 0 (0.00%)
+
+===== TRANSITIVE DEPENDENCY =====
+Distribution of packages by coverage (%):
+100% coverage: 240 package(s) (15.20%)
+50% coverage: 3 package(s) (0.19%)
+47% coverage: 1 package(s) (0.06%)
+40% coverage: 2 package(s) (0.13%)
+39% coverage: 1 package(s) (0.06%)
+37% coverage: 1 package(s) (0.06%)
+35% coverage: 1 package(s) (0.06%)
+33% coverage: 1 package(s) (0.06%)
+28% coverage: 2 package(s) (0.13%)
+27% coverage: 3 package(s) (0.19%)
+25% coverage: 1 package(s) (0.06%)
+24% coverage: 2 package(s) (0.13%)
+23% coverage: 2 package(s) (0.13%)
+22% coverage: 5 package(s) (0.32%)
+21% coverage: 3 package(s) (0.19%)
+20% coverage: 4 package(s) (0.25%)
+18% coverage: 5 package(s) (0.32%)
+17% coverage: 7 package(s) (0.44%)
+16% coverage: 2 package(s) (0.13%)
+15% coverage: 4 package(s) (0.25%)
+14% coverage: 6 package(s) (0.38%)
+13% coverage: 13 package(s) (0.82%)
+12% coverage: 6 package(s) (0.38%)
+11% coverage: 4 package(s) (0.25%)
+10% coverage: 6 package(s) (0.38%)
+9% coverage: 15 package(s) (0.95%)
+8% coverage: 13 package(s) (0.82%)
+7% coverage: 25 package(s) (1.58%)
+6% coverage: 19 package(s) (1.20%)
+5% coverage: 25 package(s) (1.58%)
+4% coverage: 40 package(s) (2.53%)
+3% coverage: 52 package(s) (3.29%)
+2% coverage: 73 package(s) (4.62%)
+1% coverage: 107 package(s) (6.78%)
+0% coverage: 885 package(s) (56.05%)
+
+===== END OF REPORT =====

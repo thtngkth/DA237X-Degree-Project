@@ -1,0 +1,69 @@
+===== TOTAL COMPONENTS =====
+Total Cargo packages: 319
+Total SBOM components: 309
+
+===== EDGE METRICS =====
+Correct edge coverage: 61.33%
+Missing edges: 437 (38.67%)
+False edges: 2 (0.29%)
+
+===== FALSE EDGES =====
+iana-time-zone (0.1.65) -> windows-core (0.62.2)
+quinn-udp (0.5.14) -> windows-sys (0.60.2)
+
+===== COMPONENT METRICS =====
+Missed components: 10 (3.13%)
+Hallucinated components: 0 (0.00%)
+
+===== VERSION MISMATCHES =====
+Version mismatches: 0 (0.00%)
+
+===== TRANSITIVE DEPENDENCY =====
+Distribution of packages by coverage (%):
+100% coverage: 99 package(s) (31.03%)
+78% coverage: 1 package(s) (0.31%)
+60% coverage: 1 package(s) (0.31%)
+54% coverage: 1 package(s) (0.31%)
+50% coverage: 2 package(s) (0.63%)
+45% coverage: 1 package(s) (0.31%)
+44% coverage: 1 package(s) (0.31%)
+43% coverage: 1 package(s) (0.31%)
+41% coverage: 1 package(s) (0.31%)
+40% coverage: 2 package(s) (0.63%)
+39% coverage: 1 package(s) (0.31%)
+37% coverage: 1 package(s) (0.31%)
+36% coverage: 1 package(s) (0.31%)
+35% coverage: 1 package(s) (0.31%)
+33% coverage: 1 package(s) (0.31%)
+30% coverage: 1 package(s) (0.31%)
+29% coverage: 1 package(s) (0.31%)
+28% coverage: 2 package(s) (0.63%)
+27% coverage: 3 package(s) (0.94%)
+26% coverage: 1 package(s) (0.31%)
+25% coverage: 3 package(s) (0.94%)
+24% coverage: 1 package(s) (0.31%)
+22% coverage: 3 package(s) (0.94%)
+21% coverage: 4 package(s) (1.25%)
+20% coverage: 3 package(s) (0.94%)
+19% coverage: 2 package(s) (0.63%)
+18% coverage: 1 package(s) (0.31%)
+17% coverage: 8 package(s) (2.51%)
+16% coverage: 6 package(s) (1.88%)
+15% coverage: 5 package(s) (1.57%)
+14% coverage: 7 package(s) (2.19%)
+13% coverage: 1 package(s) (0.31%)
+12% coverage: 4 package(s) (1.25%)
+11% coverage: 5 package(s) (1.57%)
+10% coverage: 2 package(s) (0.63%)
+9% coverage: 10 package(s) (3.13%)
+8% coverage: 3 package(s) (0.94%)
+7% coverage: 5 package(s) (1.57%)
+6% coverage: 2 package(s) (0.63%)
+5% coverage: 8 package(s) (2.51%)
+4% coverage: 12 package(s) (3.76%)
+3% coverage: 20 package(s) (6.27%)
+2% coverage: 17 package(s) (5.33%)
+1% coverage: 19 package(s) (5.96%)
+0% coverage: 45 package(s) (14.11%)
+
+===== END OF REPORT =====

@@ -1,5 +1,11 @@
+"""
+Main entry point for the Cargo vs SBOM comparison tool.
+"""
+
 from pathlib import Path
-from working import CargoLock, SBOM, Comparator
+from cargo import CargoLock
+from sbom import SBOM
+from comparator import Comparator
 
 def read_files(path):
     """Read path.txt and return a list of (cargo_path, sbom_path)."""

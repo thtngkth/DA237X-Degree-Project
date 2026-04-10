@@ -1,20 +1,37 @@
 # agent-browser
-/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/syft_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/cargo_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/agent-browser.cdx.json
-/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/trivy_sbom.json
-# zoxide
-/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/syft_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/trivy_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/zoxide.cdx.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/trivy_sbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/sbom/agent-browser.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/agent-browser/cli/sbom/trivy.json
 # firecracker
-/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/syft_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/trivy_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/firecracker.cdx.json
-/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/trivy_sbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/sbom/firecracker.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/firecracker/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/firecracker/sbom/trivy.json
 # zellij
-/mnt/c/Users/vntra/Downloads/rust_projects/zellij/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/syft_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zellij/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/trivy_sbom.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zellij/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/zellij.cdx.json
-/mnt/c/Users/vntra/Downloads/rust_projects/zellij/Cargo.lock | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/trivy_sbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zellij/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zellij/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zellij/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/sbom/zellij.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zellij/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zellij/sbom/trivy.json
+# zoxide
+/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/sbom/zoxide.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/zoxide/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/zoxide/sbom/trivy.json
+# dioxus
+/mnt/c/Users/vntra/Downloads/rust_projects/dioxus/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/dioxus/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/dioxus/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/dioxus/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/dioxus/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/dioxus/sbom/dioxus.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/dioxus/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/dioxus/sbom/trivy.json
+# goose
+/mnt/c/Users/vntra/Downloads/rust_projects/goose/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/goose/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/goose/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/goose/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/goose/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/goose/sbom/goose-cli.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/goose/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/goose/sbom/goose-server.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/goose/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/goose/sbom/trivy.json
+# yazi
+/mnt/c/Users/vntra/Downloads/rust_projects/yazi/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/yazi/sbom/syft.json
+/mnt/c/Users/vntra/Downloads/rust_projects/yazi/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/yazi/sbom/cargosbom.json
+/mnt/c/Users/vntra/Downloads/rust_projects/yazi/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/yazi/sbom/yazi-cli.cdx.json
+/mnt/c/Users/vntra/Downloads/rust_projects/yazi/metadata.json | /mnt/c/Users/vntra/Downloads/rust_projects/yazi/sbom/trivy.json
+

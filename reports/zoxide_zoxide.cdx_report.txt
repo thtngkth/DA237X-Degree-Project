@@ -1,0 +1,42 @@
+===== TOTAL COMPONENTS =====
+Total Cargo packages: 114
+Total SBOM components: 57
+
+===== EDGE METRICS =====
+Correct edge coverage: 29.39%
+Missing edges: 185 (70.61%)
+False edges: 0 (0.00%)
+
+===== COMPONENT METRICS =====
+Missed components: 57 (50.00%)
+Hallucinated components: 0 (0.00%)
+
+===== VERSION MISMATCHES =====
+Version mismatches: 0 (0.00%)
+
+===== TRANSITIVE DEPENDENCY =====
+Distribution of packages by coverage (%):
+100% coverage: 43 package(s) (37.72%)
+79% coverage: 1 package(s) (0.88%)
+75% coverage: 1 package(s) (0.88%)
+73% coverage: 1 package(s) (0.88%)
+67% coverage: 4 package(s) (3.51%)
+64% coverage: 1 package(s) (0.88%)
+62% coverage: 1 package(s) (0.88%)
+56% coverage: 1 package(s) (0.88%)
+50% coverage: 3 package(s) (2.63%)
+48% coverage: 1 package(s) (0.88%)
+45% coverage: 2 package(s) (1.75%)
+44% coverage: 1 package(s) (0.88%)
+42% coverage: 1 package(s) (0.88%)
+33% coverage: 1 package(s) (0.88%)
+28% coverage: 1 package(s) (0.88%)
+26% coverage: 1 package(s) (0.88%)
+17% coverage: 1 package(s) (0.88%)
+11% coverage: 1 package(s) (0.88%)
+8% coverage: 1 package(s) (0.88%)
+7% coverage: 1 package(s) (0.88%)
+5% coverage: 1 package(s) (0.88%)
+0% coverage: 45 package(s) (39.47%)
+
+===== END OF REPORT =====
