@@ -4,14 +4,17 @@ hallucinated packages, version mismatches, false dependencies,
 and transitive dependency coverage.
 """
 
+import os
 from collections import defaultdict
+from openpyxl import load_workbook
+from openpyxl import Workbook
+from openpyxl.styles import Font
 from cargo import CargoLock
 from sbom import SBOM
 
 
 class Comparator:
     """Compare Cargo metadata JSON with SBOM, including transitive coverage and version mismatches."""
-
     def __init__(self, cargo: CargoLock, sbom: SBOM):
         self.cargo = cargo
         self.sbom = sbom
@@ -164,58 +167,115 @@ class Comparator:
                     max_sbom_depth = 0
                 self.depth_stats.append((pkg, max_cargo_depth, max_sbom_depth))
 
-    def write_report(self, path):
-        """Write all comparison results to a text report file."""
-        with open(path, "w") as f:
-            f.write("===== TOTAL COMPONENTS =====\n")
-            f.write(f"Total Cargo packages: {self.total_cargo_packages}\n")
-            f.write(f"Total SBOM components: {self.total_sbom_components}\n\n")
+        # Calculate the average transitive coverage score across all packages
+        coverage_scores = []
+        for pkg, total in self.transitive_totals.items():
+            # Find how many transitive deps are missing for this package
+            missing_count = 0
+            for count, packages in self.transitive_missing_hist.items():
+                if pkg in packages:
+                    missing_count = count
+                    break
 
-            f.write("===== EDGE METRICS =====\n")
-            f.write(f"Correct edge coverage: {self.coverage:.2f}%\n")
-            f.write(f"Missing edges: {len(self.missing_edges)} ({self.missing_edges_per:.2f}%)\n")
-            f.write(f"False edges: {len(self.false_edges)} ({self.false_edges_per:.2f}%)\n\n")
+            if total > 0:
+                score = (total - missing_count) / total * 100
+            else:
+                # A package with no transitive deps is trivially fully covered
+                score = 100
 
-            if len(self.false_edges) > 0:
-                f.write("===== FALSE EDGES =====\n")
-                for pkg_name, pkg_version, dep_name, dep_version in sorted(self.false_edges):
-                    f.write(f"{pkg_name} ({pkg_version}) -> {dep_name} ({dep_version})\n")
-                f.write("\n")
-            f.write("===== COMPONENT METRICS =====\n")
-            f.write(f"Missed components: {len(self.missed_components)} ({self.missed_components_per:.2f}%)\n")
-            f.write(f"Hallucinated components: {len(self.hallucinated_components)} ({self.hallucinated_components_per:.2f}%)\n\n")
+            coverage_scores.append(score)
 
-            f.write("===== VERSION MISMATCHES =====\n")
-            f.write(f"Version mismatches: {len(self.version_mismatches)} ({self.version_mismatch_per:.2f}%)\n\n")
+        if len(coverage_scores) > 0:
+            self.avg_transitive_coverage = sum(coverage_scores) / len(coverage_scores)
+        else:
+            self.avg_transitive_coverage = 0
 
-            f.write("===== TRANSITIVE DEPENDENCY =====\n")
-            coverage_counts = defaultdict(int)
-            full_coverage_count = 0
-            total_packages = len(self.transitive_totals)
+    def write_report(self, path, sbom_path):
+        """Append one formatted row of results to the Excel file."""
+        # Create Excel file if it doesn't exist
+        if not os.path.exists(path):
+            wb = Workbook()
+            sheet = wb.active
+            sheet.append([
+                "Project",
+                "Cargo pkg",
+                "SBOM pkg",
+                "Edg coverage (%)",
+                "Edg missing",
+                "False edg",
+                "Missed comp",
+                "Halluc comp",
+                "Version mismatch",
+                "Avg trans dep (%)",
+                "100% trans dep",
+                "0% trans dep",
+            ])
+            wb.save(path)
 
-            for pkg, total in self.transitive_totals.items():
-                # Look up how many transitive deps are missing for this package
-                missing_count = 0
-                for count, packages in self.transitive_missing_hist.items():
-                    if pkg in packages:
-                        missing_count = count
-                        break
+        wb = load_workbook(path)
+        sheet = wb.active
 
-                # Calculate coverage percentage for this package
-                if total > 0:
-                    coverage = (total - missing_count) / total * 100
-                else:
-                    coverage = 100
+        # Percentage count
+        def percentage_count(count, total):
+            if total == 0:
+                return "0% (0)"
+            pct = (count / total) * 100
+            return f"{pct:.2f}% ({count})"
 
-                coverage_rounded = round(coverage)
-                coverage_counts[coverage_rounded] += 1
+        # Transitive coverage 
+        count_100 = 0
+        count_0 = 0
 
-                if coverage_rounded == 100:
-                    full_coverage_count += 1
+        for pkg, total in self.transitive_totals.items():
+            missing_count = 0
+            for count, packages in self.transitive_missing_hist.items():
+                if pkg in packages:
+                    missing_count = count
+                    break
 
-            f.write("Distribution of packages by coverage (%):\n")
-            for cov in sorted(coverage_counts.keys(), reverse=True):
-                count = coverage_counts[cov]
-                f.write(f"{cov}% coverage: {count} package(s) ({count / total_packages * 100:.2f}%)\n")
+            coverage = (total - missing_count) / total * 100 if total > 0 else 100
+            rounded = round(coverage)
 
-            f.write("\n===== END OF REPORT =====\n")
+            if rounded == 100:
+                count_100 += 1
+            elif rounded == 0:
+                count_0 += 1
+
+        total_pkgs = len(self.transitive_totals)
+
+        # Project name from SBOM path 
+        project_name = os.path.splitext(os.path.basename(sbom_path))[0]
+
+        # Build formatted row 
+        new_row = [
+            project_name,
+            self.total_cargo_packages,
+            self.total_sbom_components,
+            f"{self.coverage:.2f}",
+
+            percentage_count(len(self.missing_edges), len(self.cargo.edges())),
+            percentage_count(len(self.false_edges), len(self.sbom.edges())),
+            percentage_count(len(self.missed_components), len(self.cargo.component_set())),
+            percentage_count(len(self.hallucinated_components), len(self.sbom.component_set())),
+            percentage_count(len(self.version_mismatches), self.total_sbom_components),
+
+            f"{self.avg_transitive_coverage:.2f}",
+
+            percentage_count(count_100, total_pkgs),
+            percentage_count(count_0, total_pkgs),
+        ]
+
+        last_data_row = 0
+        for row in sheet.iter_rows(values_only=True):
+            if any(cell is not None for cell in row):
+                last_data_row +=1
+
+        for col_index, value in enumerate(new_row, start = 1):
+            sheet.cell(row = last_data_row + 1, column = col_index, value = value)
+
+        # ---- Style row ----
+        last_row = sheet.max_row
+        for col in range(1, len(new_row) + 1):
+            sheet.cell(row=last_row, column=col).font = Font(name="Arial")
+
+        wb.save(path)

@@ -7,14 +7,16 @@ from cargo import CargoLock
 from sbom import SBOM
 from comparator import Comparator
 
+
 def read_files(path):
-    """Read path.txt and return a list of (cargo_path, sbom_path)."""
+    """Read path.txt and return a list of (cargo_path, sbom_path) pairs."""
     pairs = []
 
     with open(path) as f:
         for line in f:
             line = line.strip()
 
+            # Skip empty lines and comment lines
             if line == "" or line.startswith("#"):
                 continue
 
@@ -35,10 +37,6 @@ def main():
 
     run_number = 1
 
-    # Create folder to save the reports
-    reports_dir = Path("reports")
-    reports_dir.mkdir(exist_ok=True)
-
     for pair in file_pairs:
         cargo_path = pair[0]
         sbom_path = pair[1]
@@ -47,29 +45,23 @@ def main():
         print("Cargo:", cargo_path)
         print("SBOM :", sbom_path)
 
+        # Load and parse both files
         cargo = CargoLock(cargo_path)
         sbom = SBOM(sbom_path)
 
+        # Run the comparison
         comp = Comparator(cargo, sbom)
         comp.compare()
 
-        # Extract repo name
-        sbom_path_obj = Path(sbom_path)
+        # Always write to the shared sbom_results.xlsx file
+        output_file = "real_sbom_results.xlsx"
 
-        try:
-            rust_index = sbom_path_obj.parts.index("rust_projects")
-            repo_name = sbom_path_obj.parts[rust_index + 1]
-        except (ValueError, IndexError):
-            repo_name = sbom_path_obj.stem  # fallback if 'rust_projects' not in path
-
-        # Name report after SBOM file
-        sbom_name = sbom_path_obj.stem
-        output_file = reports_dir / f"{repo_name}_{sbom_name}_report.txt"
-
-        comp.write_report(output_file)
+        comp.write_report(output_file, sbom_path)
         print("Report written to", output_file)
 
         run_number += 1
 
+
+# Only run main() when this file is executed directly, not when imported
 if __name__ == "__main__":
     main()
