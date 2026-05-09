@@ -1,7 +1,6 @@
 """
 Compares Cargo metadata JSON with an SBOM, reporting on missing packages,
-hallucinated packages, version mismatches, false dependencies,
-and transitive dependency coverage.
+version mismatches, false dependencies, and transitive dependency coverage.
 """
 
 import os
@@ -61,23 +60,6 @@ class Comparator:
         for component in cargo_components:
             if component not in sbom_components:
                 self.missed_components.add(component)
-
-        # Find components in the SBOM that don't exist in Cargo (hallucinated)
-        self.hallucinated_components = set()
-        for component in sbom_components:
-            if component not in cargo_components:
-                self.hallucinated_components.add(component)
-
-        # Calculate percentages, avoiding division by zero
-        if len(cargo_components) > 0:
-            self.missed_components_per = len(self.missed_components) / len(cargo_components) * 100
-        else:
-            self.missed_components_per = 0
-
-        if len(sbom_components) > 0:
-            self.hallucinated_components_per = len(self.hallucinated_components) / len(sbom_components) * 100
-        else:
-            self.hallucinated_components_per = 0
 
         cargo_edges = self.cargo.edges()
         sbom_edges = self.sbom.edges()
@@ -190,6 +172,21 @@ class Comparator:
         else:
             self.avg_transitive_coverage = 0
 
+    @staticmethod
+    def clear_report(path):
+        """
+        Clear all data rows from the Excel file.
+        """
+        wb = load_workbook(path)
+        sheet = wb.active
+
+        # Delete every row from row 2 downward
+        if sheet.max_row >= 2:
+            sheet.delete_rows(2, sheet.max_row - 1)
+
+        wb.save(path)
+        print(f"Cleared existing data from {path}")
+
     def write_report(self, path, sbom_path):
         """Append one formatted row of results to the Excel file."""
         # Create Excel file if it doesn't exist
@@ -204,7 +201,7 @@ class Comparator:
                 "Edg missing",
                 "False edg",
                 "Missed comp",
-                "Halluc comp",
+                "Invented pkg",
                 "Version mismatch",
                 "Avg trans dep (%)",
                 "100% trans dep",
@@ -256,7 +253,7 @@ class Comparator:
             percentage_count(len(self.missing_edges), len(self.cargo.edges())),
             percentage_count(len(self.false_edges), len(self.sbom.edges())),
             percentage_count(len(self.missed_components), len(self.cargo.component_set())),
-            percentage_count(len(self.hallucinated_components), len(self.sbom.component_set())),
+            percentage_count(len(self.missing_in_cargo), self.total_sbom_components),
             percentage_count(len(self.version_mismatches), self.total_sbom_components),
 
             f"{self.avg_transitive_coverage:.2f}",

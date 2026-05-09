@@ -8,10 +8,9 @@ from package import Package
 
 def parse_version(version_str):
     """
-    Parse a version string like '1.2.3' into a tuple of integers (1, 2, 3).
-    Returns None if the string can't be parsed.
+    Parse a version string into a tuple of integers.
     """
-    # Strip any pre-release or build metadata suffix (e.g. "1.2.3-alpha" -> "1.2.3")
+    # Strip any pre-release or build metadata suffix
     version_str = version_str.strip().split("-")[0].split("+")[0]
 
     parts = version_str.split(".")
@@ -34,8 +33,7 @@ def parse_version(version_str):
 
 def check_single_clause(clause, installed_version_str):
     """
-    Check whether an installed version satisfies a single requirement clause
-    (i.e. one without any commas).
+    Check whether an installed version satisfies a single requirement clause.
 
     Supported formats:
       - "1.2.3"    : semver-compatible with 1.2.3 (same as ^1.2.3)
@@ -53,7 +51,7 @@ def check_single_clause(clause, installed_version_str):
     if clause == "*":
         return True
 
-    # Detect the operator prefix (check >= and <= before = > <)
+    # Detect the operator prefix
     if clause.startswith(">="):
         operator = ">="
         version_part = clause[2:].strip()
@@ -76,7 +74,7 @@ def check_single_clause(clause, installed_version_str):
         operator = "<"
         version_part = clause[1:].strip()
     else:
-        # No operator means "^" (semver-compatible) by default
+        # No operator, "^", by default
         operator = "^"
         version_part = clause
 
@@ -90,6 +88,7 @@ def check_single_clause(clause, installed_version_str):
     ins_major, ins_minor, ins_patch = ins_ver
 
     if operator == "=":
+        # Exact match required
         return ins_ver == req_ver
 
     elif operator == "^":
@@ -130,10 +129,9 @@ def version_satisfies_req(req_str, installed_version_str):
     """
     Check whether an installed version satisfies a full Cargo version requirement string.
     """
-    # Get individual clauses, e.g. [">=0.52", "<0.62"]
+    # Split on commas to get individual clauses
     clauses = req_str.split(",")
 
-    # Every clause must be satisfied (AND logic)
     for clause in clauses:
         if not check_single_clause(clause.strip(), installed_version_str):
             return False
@@ -149,39 +147,87 @@ class CargoLock:
         self.read(path)
 
     def read(self, path):
-        """Read Cargo metadata JSON and extract packages and dependencies."""
+        """
+        Read Cargo metadata JSON and extract packages and dependencies (read from resolve.nodes).
+        If resolve.nodes is not present, read from packages[].dependencies and filter manually.
+        """
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        # First pass: build a name -> list of (version, source) lookup.
-        # A package name can have multiple installed versions, so we store a list.
-        name_to_versions = {}
+        # First pass: build a pkg_id -> Package object map
+        pkg_map = {}
         for pkg in data.get("packages", []):
             name = pkg["name"].lower().strip()
             version = pkg["version"]
             source = pkg.get("source", "local")
+            pkg_map[pkg["id"]] = Package(name, version, source, [])
 
-            if name not in name_to_versions:
-                name_to_versions[name] = []
-            name_to_versions[name].append((version, source))
+        resolve_nodes = data.get("resolve", {}).get("nodes", [])
 
-        # Second pass: build Package objects with semver-resolved dependencies
-        for pkg in data.get("packages", []):
-            name = pkg["name"].lower().strip()
-            version = pkg["version"]
-            source = pkg.get("source", "local")
+        if len(resolve_nodes) > 0:
+            # Use resolve.nodes as the source of truth.
+            for node in resolve_nodes:
+                pkg_id = node["id"]
 
-            dependencies = []
-            for dep in pkg.get("dependencies", []):
-                dep_name = dep["name"].lower().strip()
-                dep_req = dep.get("req", "*")
+                if pkg_id not in pkg_map:
+                    continue
 
-                # Find ALL installed versions that satisfy the version requirement.
-                for installed_version, installed_source in name_to_versions.get(dep_name, []):
-                    if version_satisfies_req(dep_req, installed_version):
-                        dependencies.append((dep_name, installed_version))
+                dependencies = []
+                for dep in node.get("deps", []):
+                    dep_pkg_id = dep.get("pkg")
 
-            self.packages.append(Package(name, version, source, dependencies))
+                    if dep_pkg_id not in pkg_map:
+                        continue
+
+                    # Skip dev-only deps using dep_kinds if available
+                    dep_kinds = dep.get("dep_kinds", [])
+                    is_dev_only = False
+                    if len(dep_kinds) > 0:
+                        # If every kind entry is "dev", skip this dependency
+                        all_dev = all(k.get("kind") == "dev" for k in dep_kinds)
+                        if all_dev:
+                            is_dev_only = True
+
+                    if is_dev_only:
+                        continue
+
+                    dep_pkg = pkg_map[dep_pkg_id]
+                    dependencies.append((dep_pkg.name, dep_pkg.version))
+
+                pkg_map[pkg_id].dependencies = dependencies
+
+        else:
+            # Fallback: resolve.nodes is missing, so read from packages[].dependencies
+            # and filter out dev, build and optional deps manually
+            name_to_versions = {}
+            for pkg in data.get("packages", []):
+                name = pkg["name"].lower().strip()
+                version = pkg["version"]
+                if name not in name_to_versions:
+                    name_to_versions[name] = []
+                name_to_versions[name].append(version)
+
+            for pkg in data.get("packages", []):
+                pkg_id = pkg["id"]
+                if pkg_id not in pkg_map:
+                    continue
+
+                dependencies = []
+                for dep in pkg.get("dependencies", []):
+                    dep_name = dep["name"].lower().strip()
+                    dep_req = dep.get("req", "*")
+
+                    # Skip dev dependencies
+                    if dep.get("kind") == "dev" or dep.get("kind") == "build":
+                        continue
+
+                    for installed_version in name_to_versions.get(dep_name, []):
+                        if version_satisfies_req(dep_req, installed_version):
+                            dependencies.append((dep_name, installed_version))
+
+                pkg_map[pkg_id].dependencies = dependencies
+
+        self.packages = list(pkg_map.values())
 
     def build_lookup(self):
         """Build a lookup dictionary: name -> version -> source."""
@@ -195,26 +241,12 @@ class CargoLock:
     def edges(self):
         """Return set of direct dependency edges as tuples: (pkg_name, pkg_version, dep_name, dep_version)."""
         edges = set()
-        lookup = self.build_lookup()
 
         for pkg in self.packages:
             for dep_name, dep_version in pkg.dependencies:
-                if dep_version is None:
-                    # Version is unknown, so add an edge for every known version of this dep
-                    known_versions = lookup.get(dep_name, {}).keys()
-                    for v in known_versions:
-                        edges.add((pkg.name, pkg.version, dep_name, v))
-                else:
-                    edges.add((pkg.name, pkg.version, dep_name, dep_version))
+                edges.add((pkg.name, pkg.version, dep_name, dep_version))
 
         return edges
-
-    def build_resolver(self):
-        """Return a mapping from (name, source) -> version for resolving dependencies."""
-        resolver = {}
-        for p in self.packages:
-            resolver[(p.name, p.source)] = p.version
-        return resolver
 
     def component_set(self):
         """Return a set of (name, version) tuples for all packages."""
@@ -226,17 +258,11 @@ class CargoLock:
     def adjacency(self):
         """Return a dictionary mapping each package id to its list of direct dependency ids."""
         adj = {}
-        resolver = self.build_resolver()
 
         for pkg in self.packages:
             neighbors = []
             for dep_name, dep_version in pkg.dependencies:
-                if dep_version is None:
-                    resolved_version = resolver.get((dep_name, pkg.source))
-                    if resolved_version is not None:
-                        neighbors.append((dep_name, resolved_version))
-                else:
-                    neighbors.append((dep_name, dep_version))
+                neighbors.append((dep_name, dep_version))
             adj[pkg.id()] = neighbors
 
         return adj
