@@ -8,7 +8,7 @@ from sbom import SBOM
 from comparator import Comparator
 
 ROOT = Path(__file__).parent.parent
-BASE_PATH = "/rust_projects"
+BASE_PATH = "/mnt/c/Users/vntra/Downloads/rust_projects"
 
 def read_files(path):
     """Read path.txt and return a list of (cargo_path, sbom_path) pairs."""
@@ -60,7 +60,7 @@ def main():
     run_number = 1
 
     # Clear the Excel file before starting the comparisons
-    output_file = ROOT / "sbom_results.xlsx"
+    output_file = ROOT / "results.xlsx"
     Comparator.clear_report(output_file)
  
     for pair in file_pairs:
@@ -82,8 +82,6 @@ def main():
             # Run the comparison
             comp = Comparator(cargo, sbom)
             comp.compare()
- 
-            output_file = "sbom_results.xlsx"
  
             comp.write_report(output_file, sbom_file)
             print("Report written to", output_file)

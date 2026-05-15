@@ -55,11 +55,42 @@ class Comparator:
         self.total_cargo_packages = len(self.cargo.packages)
         self.total_sbom_components = len(self.sbom.packages)
 
-        # Find components present in Cargo but missing from the SBOM
+        # Name-only lookup
+        cargo_names = {pkg.name for pkg in self.cargo.packages}
+        sbom_names = {pkg.name for pkg in self.sbom.packages}
+
+        lookup = self.cargo.build_lookup()
+
+        # Missed components
         self.missed_components = set()
-        for component in cargo_components:
-            if component not in sbom_components:
-                self.missed_components.add(component)
+        for (name, version) in cargo_components:
+            if name not in sbom_names:
+                self.missed_components.add((name, version))
+
+        # Invented packages
+        seen_invented = set()
+        self.missing_in_cargo = []
+        for pkg in self.sbom.packages:
+            if pkg.name not in cargo_names:
+                if pkg.name not in seen_invented:     # only count each name once
+                    seen_invented.add(pkg.name)
+                    self.missing_in_cargo.append(pkg.id())
+
+        # Version mismatches
+        seen_mismatches = set()
+        self.version_mismatches = []
+        for pkg in self.sbom.packages:
+            if pkg.name in lookup:
+                if pkg.version not in lookup[pkg.name]:
+                    key = pkg.id()                    # (name, version) tuple
+                    if key not in seen_mismatches:    # only count each (name, version) once
+                        seen_mismatches.add(key)
+                        self.version_mismatches.append(key)
+
+        if self.total_sbom_components > 0:
+            self.version_mismatches_per = (len(self.version_mismatches) / self.total_sbom_components * 100)
+        else:
+            self.version_mismatches_per = 0
 
         cargo_edges = self.cargo.edges()
         sbom_edges = self.sbom.edges()
@@ -92,25 +123,6 @@ class Comparator:
             self.false_edges_per = len(self.false_edges) / len(sbom_edges) * 100
         else:
             self.false_edges_per = 0
-
-        # Check for version mismatches between SBOM packages and Cargo packages
-        lookup = self.cargo.build_lookup()
-        self.version_mismatches = []
-        self.missing_in_cargo = []
-
-        for pkg in self.sbom.packages:
-            if pkg.name in lookup:
-                # Package exists in Cargo, but the version is different
-                if pkg.version not in lookup[pkg.name]:
-                    self.version_mismatches.append(pkg.id())
-            else:
-                # Package doesn't exist in Cargo at all
-                self.missing_in_cargo.append(pkg.id())
-
-        if self.total_sbom_components > 0:
-            self.version_mismatch_per = len(self.version_mismatches) / self.total_sbom_components * 100
-        else:
-            self.version_mismatch_per = 0
 
         # Calculate transitive dependency coverage per package
         cargo_adj = self.cargo.adjacency()
