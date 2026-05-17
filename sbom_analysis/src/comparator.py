@@ -76,7 +76,7 @@ class Comparator:
                     seen_invented.add(pkg.name)
                     self.missing_in_cargo.append(pkg.id())
 
-        # Version mismatches
+        # Version mismatches (SBOM-side)
         seen_mismatches = set()
         self.version_mismatches = []
         for pkg in self.sbom.packages:
@@ -91,6 +91,15 @@ class Comparator:
             self.version_mismatches_per = (len(self.version_mismatches) / self.total_sbom_components * 100)
         else:
             self.version_mismatches_per = 0
+
+        # Version mismatches (Cargo-side)
+        self.cargo_version_mismatched = set()
+        for (name, version) in cargo_components:
+            if name in sbom_names:
+                if (name, version) not in sbom_components:
+                    self.cargo_version_mismatched.add((name, version))
+
+        self.correctly_identified = cargo_components & sbom_components
 
         cargo_edges = self.cargo.edges()
         sbom_edges = self.sbom.edges()
@@ -209,6 +218,8 @@ class Comparator:
                 "Project",
                 "Cargo pkg",
                 "SBOM pkg",
+                "Correctly identified pkg",
+                "Cargo version mismatched",
                 "Edg coverage (%)",
                 "Edg missing",
                 "False edg",
@@ -260,6 +271,8 @@ class Comparator:
             project_name,
             self.total_cargo_packages,
             self.total_sbom_components,
+            len(self.correctly_identified),
+            len(self.cargo_version_mismatched),
             f"{self.coverage:.2f}",
 
             percentage_count(len(self.missing_edges), len(self.cargo.edges())),
