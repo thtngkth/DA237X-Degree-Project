@@ -9,7 +9,7 @@ from comparator import Comparator
 from collections import defaultdict
 
 ROOT = Path(__file__).parent.parent
-BASE_PATH = "/mnt/c/Users/vntra/Downloads/rust_projects"
+BASE_PATH = "Downloads/rust_projects"
 
 def detect_tool(sbom_filename: str):
     """Detects the SBOM tool by SBOM file"""
